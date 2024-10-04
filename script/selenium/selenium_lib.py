@@ -17,6 +17,10 @@ from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 
 
 class SeleniumLib(object):
+    def wait_and_find_element(self, by, value, timeout=10):
+        return WebDriverWait(self.driver, timeout).until(
+            EC.presence_of_element_located((by, value))
+        )
     def __init__(self, config):
         self.config = config
         self.video_recorder = None
