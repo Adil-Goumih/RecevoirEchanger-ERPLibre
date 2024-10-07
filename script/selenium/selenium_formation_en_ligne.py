@@ -1,114 +1,3 @@
-# from selenium import webdriver
-# from selenium.webdriver.chrome.service import Service
-# from webdriver_manager.chrome import ChromeDriverManager
-# from selenium.webdriver.chrome.options import Options
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-# from selenium.common.exceptions import TimeoutException
-# import time
-
-# def create_elearning_course(driver):
-#     try:
-#         # Naviguer directement vers la page eLearning
-#         driver.get("http://127.0.0.1:8069/web?db=nutrition_libre#action=469&model=slide.channel&view_type=kanban&cids=1&menu_id=299")
-        
-#         # Attendre que la page soit chargée
-#         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, "o_kanban_view")))
-        
-#         # Cliquer sur le bouton "Créer"
-#         create_button = WebDriverWait(driver, 10).until(
-#             EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'o_list_button_add') or contains(@class, 'o-kanban-button-new')]"))
-#         )
-#         create_button.click()
-        
-#         # Attendre que le formulaire de création soit chargé
-#         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "o_form_view")))
-        
-#         # Remplir le formulaire
-#         course_name = WebDriverWait(driver, 10).until(
-#             EC.element_to_be_clickable((By.NAME, "name"))
-#         )
-#         course_name.send_keys("Cours de nutrition avancée")
-        
-#         description = WebDriverWait(driver, 10).until(
-#             EC.element_to_be_clickable((By.NAME, "description"))
-#         )
-#         description.send_keys("Ce cours couvre les aspects avancés de la nutrition.")
-        
-#         # Sauvegarder le cours
-#         save_button = WebDriverWait(driver, 10).until(
-#             EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'o_form_button_save')]"))
-#         )
-#         save_button.click()
-        
-#         print("Cours eLearning créé avec succès!")
-#     except Exception as e:
-#         print(f"Une erreur s'est produite lors de la création du cours : {str(e)}")
-
-# def main():
-#     # Configuration du webdriver
-#     chrome_options = Options()
-#     chrome_options.add_argument("--start-maximized")  # Ouvrir Chrome en plein écran
-    
-#     # Initialiser le driver
-#     service = Service(ChromeDriverManager().install())
-#     driver = webdriver.Chrome(service=service, options=chrome_options)
-    
-#     try:
-#         # Connexion
-#         driver.get("http://127.0.0.1:8069/web/login")
-#         print(f"URL actuelle : {driver.current_url}")
-#         print(f"Titre de la page : {driver.title}")
-        
-#         # Attendre que la page de connexion soit chargée
-#         # time.sleep(5)
-        
-#         # Vérifier s'il y a des iframes
-#         iframes = driver.find_elements(By.TAG_NAME, "iframe")
-#         if iframes:
-#             print(f"Nombre d'iframes trouvés : {len(iframes)}")
-#             driver.switch_to.frame(iframes[0])
-        
-#         # Entrer les identifiants
-#         try:
-#             username = WebDriverWait(driver, 20).until(
-#                 EC.element_to_be_clickable((By.ID, "login"))
-#             )
-#             username.send_keys("admin")
-            
-#             password = WebDriverWait(driver, 20).until(
-#                 EC.element_to_be_clickable((By.ID, "password"))
-#             )
-#             password.send_keys("admin")
-            
-#             # Cliquer sur le bouton de connexion
-#             login_button = WebDriverWait(driver, 20).until(
-#                 EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
-#             )
-#             login_button.click()
-#         except TimeoutException:
-#             print("Les éléments de connexion n'ont pas été trouvés. Tentative d'utilisation de JavaScript.")
-#             driver.execute_script("document.getElementById('login').value='admin';")
-#             driver.execute_script("document.getElementById('password').value='admin';")
-#             driver.execute_script("document.querySelector('button[type=\"submit\"]').click();")
-        
-#         # Attendre que la page d'accueil soit chargée
-#         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, "o_home_menu")))
-        
-#         # Créer le cours eLearning
-#         create_elearning_course(driver)
-        
-#     except Exception as e:
-#         print(f"Une erreur s'est produite : {str(e)}")
-#         print(f"URL actuelle : {driver.current_url}")
-#         print(f"Titre de la page : {driver.title}")
-#     finally:
-#         # Fermer le navigateur
-#         driver.quit()
-
-# if __name__ == "__main__":
-#     main()
 from lib2to3.pgen2 import driver
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -118,6 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 def wait_and_sleep(seconds=2):
     time.sleep(seconds)
@@ -176,6 +68,7 @@ def login(driver, username, password):
     except Exception as e:
         print(f"Erreur lors de la connexion : {str(e)}")
         return False
+
 def check_login_success(driver):
     try:
         # Vérifier si nous sommes sur la page de discussion
@@ -188,31 +81,105 @@ def check_login_success(driver):
         print(f"Erreur lors de la vérification de la connexion : {str(e)}")
         return False
 
+# def navigate_to_elearning(driver):
+#     try:
+#         # Attendre que le menu hamburger soit chargé
+#         hamburger_menu = WebDriverWait(driver, 20).until(
+#             EC.element_to_be_clickable((By.CSS_SELECTOR, ".o_navbar_apps_menu .dropdown-toggle"))
+#         )
+#         print("Menu hamburger trouvé")
+
+#         # Cliquer sur le menu hamburger
+#         hamburger_menu.click()
+#         print("Menu hamburger cliqué")
+
+#         # Attendre que le menu déroulant s'ouvre
+#         WebDriverWait(driver, 10).until(
+#             EC.visibility_of_element_located((By.CSS_SELECTOR, ".o-dropdown--menu"))
+#         )
+#         print("Menu déroulant ouvert")
+
+#         # Trouver et cliquer sur l'option eLearning
+#         elearning_option = WebDriverWait(driver, 10).until(
+#             EC.element_to_be_clickable((By.XPATH, "//a[contains(@href, 'website_slides.website_slides_menu_root')]"))
+#         )
+#         driver.execute_script("arguments[0].click();", elearning_option)
+#         print("Option eLearning cliquée")
+
+#         # Attendre que la page eLearning se charge
+#         WebDriverWait(driver, 20).until(
+#             EC.url_contains("website_slides")
+#         )
+#         print("Page eLearning chargée")
+
+#         # Vérifier si nous sommes sur la bonne page
+#         if "website_slides" not in driver.current_url:
+#             print("Redirection inattendue. Tentative de navigation manuelle vers eLearning.")
+#             driver.get("http://localhost:8069/web#menu_id=299&action=469")  # Ajustez cette URL si nécessaire
+#             WebDriverWait(driver, 20).until(
+#                 EC.url_contains("website_slides")
+#             )
+
+#         # Imprimer l'URL et le titre actuels pour le débogage
+#         print(f"URL actuelle après navigation : {driver.current_url}")
+#         print(f"Titre de la page actuelle : {driver.title}")
+
+#     except Exception as e:
+#         print(f"Erreur lors de la navigation vers eLearning : {str(e)}")
+#         print(f"URL actuelle : {driver.current_url}")
+#         print(f"Titre de la page actuelle : {driver.title}")
+    
+#     # Capture d'écran pour le débogage
+#     driver.save_screenshot("navigation_elearning.png")
 def navigate_to_elearning(driver):
     try:
-        # Attendre que le menu soit chargé
-        WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "o_menu_sections"))
+        # Cliquer sur le menu hamburger
+        hamburger_menu = WebDriverWait(driver, 20).until(
+           EC.element_to_be_clickable((By.CSS_SELECTOR, ".o_navbar_apps_menu .dropdown-toggle"))
         )
-        print("Menu principal chargé")
+        driver.execute_script("arguments[0].click();", hamburger_menu)
+        print("Menu hamburger cliqué")
 
-        # Trouver et cliquer sur le menu eLearning
-        elearning_menu = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'eLearning')]"))
+        # Attendre que le menu déroulant s'ouvre
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, ".o-dropdown--menu"))
         )
-        elearning_menu.click()
-        print("Cliqué sur le menu eLearning")
+        print("Menu déroulant ouvert")
 
+        # Vérifier si l'option eLearning est présente
+        elearning_options = driver.find_elements(By.XPATH, "//a[contains(@class, 'dropdown-item') and contains(text(), 'eLearning')]")
+        
+        if elearning_options:
+            elearning_option = elearning_options[0]
+            driver.execute_script("arguments[0].click();", elearning_option)
+            print("Option eLearning cliquée")
+        else:
+            print("Option eLearning non trouvée dans le menu. Tentative de navigation directe.")
+            # Essayez de naviguer directement vers l'URL eLearning
+            driver.get("http://localhost:8069/web#menu_id=299&action=469")  # Ajustez cette URL si nécessaire
+        
         # Attendre que la page eLearning se charge
         WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.CLASS_NAME, "o_content"))
         )
         print("Page eLearning chargée")
 
+        # Vérifier si nous sommes sur la bonne page
+        if "website_slides" in driver.current_url or "elearning" in driver.current_url.lower():
+            print("Navigation vers eLearning réussie")
+        else:
+            print("La navigation vers eLearning a échoué. Vérifiez manuellement l'URL correcte.")
+
+        print(f"URL actuelle après navigation : {driver.current_url}")
+        print(f"Titre de la page actuelle : {driver.title}")
+
     except Exception as e:
         print(f"Erreur lors de la navigation vers eLearning : {str(e)}")
         print(f"URL actuelle : {driver.current_url}")
-        print(f"Titre de la page : {driver.title}")
+        print(f"Titre de la page actuelle : {driver.title}")
+    
+    driver.save_screenshot("navigation_elearning.png")
+
 
 def create_elearning_course(driver):
     try:
@@ -259,6 +226,7 @@ def create_elearning_course(driver):
         print(f"Erreur lors de la création du cours eLearning : {str(e)}")
         print(f"URL actuelle : {driver.current_url}")
         print(f"Titre de la page : {driver.title}")
+
 def main():
     chrome_options = Options()
     chrome_options.add_argument("--start-maximized")
